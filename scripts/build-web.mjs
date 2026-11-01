@@ -1,0 +1,12 @@
+import {readdir,readFile,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+const root=new URL('../web/dist/',import.meta.url);
+const assets=['/','/index.html',... (await readdir(new URL('assets/',root))).map(f=>'/assets/'+f)];
+const version=createHash('sha256').update(await readFile(new URL('index.html',root))).digest('hex').slice(0,16);
+await writeFile(new URL('sw.js',root),`const CACHE='quiccie-${version}';const ASSETS=${JSON.stringify(assets)};
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)))});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('quiccie-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(url.origin!==self.location.origin||event.request.method!=='GET'||url.pathname==='/healthz')return;
+if(url.pathname==='/api/attachment'){event.respondWith(new Promise((resolve,reject)=>{const request=indexedDB.open('quiccie');request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result;if(!db.objectStoreNames.contains('attachments')){db.close();resolve(fetch(event.request));return};const read=db.transaction('attachments').objectStore('attachments').get(url.searchParams.get('path'));read.onsuccess=()=>{db.close();resolve(read.result?new Response(read.result.blob,{headers:{'Content-Type':read.result.blob.type||'application/octet-stream','X-Content-Type-Options':'nosniff','Content-Security-Policy':"sandbox; default-src 'none'"}}):fetch(event.request))};read.onerror=()=>reject(read.error)}}));return};if(url.pathname.startsWith('/api/'))return;
+event.respondWith(fetch(event.request).catch(()=>caches.match(event.request).then(cached=>cached||(event.request.mode==='navigate'?caches.match('/index.html'):Response.error()))))});
+`);

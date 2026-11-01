@@ -1,0 +1,22 @@
+import {test,expect} from './fixtures';
+for(const phone of [false,true])test(`create and select a space, keep its notes separate, and use it offline (${phone?'phone':'desktop'})`,async({page,context})=>{
+ if(phone)await page.setViewportSize({width:390,height:844});
+ await page.goto('/');await page.getByLabel('Password',{exact:true}).fill('quiccie-test-password');await page.getByRole('button',{name:'Sign in',exact:true}).click();await expect(page.locator('#sync-state')).toHaveText('Synced',{timeout:30000});
+ const controls=page.locator(phone?'.phone-header .space-controls':'.sidebar .space-controls');
+ await controls.locator('[data-add-space]').click();await page.locator('#cancel-space').click();await expect(page.locator('#space-dialog')).not.toBeVisible();
+ await controls.locator('[data-add-space]').click();const label='Side gig '+Date.now(),id=label.toLowerCase().replaceAll(' ','-');await page.locator('#space-name').fill(label);await expect(page.locator('#space-id')).toHaveValue(id);await page.locator('#create-space').click();await expect(page.locator('#space-dialog')).not.toBeVisible();await expect(controls.locator('[data-space-select]')).toHaveValue(id);
+ await page.locator(phone?'#phone-new':'#new-note').click();await page.locator('#new-path').fill('Only in this space');await page.locator('#create').click();const path=`Spaces/${id}/Only in this space.md`;await expect(page.locator('#note-path')).toHaveAttribute("title",path);
+ await expect.poll(async()=>(await context.request.get('/api/notes?path='+encodeURIComponent(path))).status()).toBe(200);
+ if(phone)await page.locator('#phone-back').click();
+ await controls.locator('[data-space-select]').selectOption('personal');await expect(page.locator('.note-card').filter({hasText:'Only in this space'})).toHaveCount(0);
+ await controls.locator('[data-space-select]').selectOption(id);await expect(page.locator('.note-card').filter({hasText:'Only in this space'})).toHaveCount(1);
+ await page.locator(phone?'[data-phone-tab=memory]':'[data-filter=memory]').click();await expect(page.locator('.note-card')).toHaveCount(0);
+ await page.locator(phone?'#phone-new':'#new-note').click();await page.locator('#new-path').fill('Shared fact');await page.locator('#create').click();await expect(page.locator('#note-path')).toHaveAttribute("title",`Spaces/${id}/Agent Memory/global/Shared fact.md`);
+ if(phone)await page.locator('#phone-back').click();await page.locator(phone?'[data-phone-tab=notes]':'[data-filter=all]').click();
+ await context.setOffline(true);
+ if(phone){await page.locator('[data-phone-tab=browse]').click();await page.locator('[data-phone-tab=projects]').click();await page.locator('[data-phone-tab=search]').click();}else await page.locator('#projects-tab').click();
+ await page.locator('#search').fill('Shared fact');await expect(page.locator('.note-card')).toHaveCount(0);await page.locator('#search').fill('');
+ await page.reload();await expect(controls.locator('[data-space-select]')).toHaveValue(id);await expect(page.locator('.note-card').filter({hasText:'Only in this space'})).toHaveCount(1);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(phone?390:1440);
+ await page.screenshot({path:`../.private/spaces-${phone?'phone':'desktop'}.png`});
+});

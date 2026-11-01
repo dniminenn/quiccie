@@ -1,0 +1,35 @@
+/* Shared surfaces keep the browser controls and app navigation in one theme. */
+:root[data-theme]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark;--ink:#eeedf5;--muted:#b3b2c3;--line:#3a3b49;--green:#c6afff;--surface:#17171d;--paper:#22232d;--rail:#1c1c24;--tint:#373047;--accent:#c6afff}
+:root[data-theme] .phone-nav{background:var(--rail);gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+:root[data-theme] .phone-nav button{min-height:64px}
+:root[data-theme] .document-head>div{display:flex;flex-wrap:wrap;gap:8px}
+:root[data-theme] .tree-tabs{gap:8px}
+:root[data-theme] .tree-row{gap:4px;border-radius:9px}
+:root[data-theme] .tree-row:has([aria-expanded=true]){background:var(--tint)}
+:root[data-theme] #folders ul{border-left:1px solid var(--line);margin-left:12px;padding-left:10px}
+:root[data-theme] .tree-folder{min-width:0;flex:1;text-align:left;min-height:40px}
+:root[data-theme] .tree-toggle{flex-shrink:0;min-height:40px}
+:root[data-theme] .folder-card{display:flex;align-items:center;gap:12px;min-height:64px;padding:14px 16px;margin:8px 12px;width:calc(100% - 24px);background:var(--paper);border:1px solid var(--line);border-radius:12px;color:var(--ink);text-align:left}
+.folder-card strong{flex:1;overflow-wrap:anywhere}.folder-card>span{color:var(--accent)}
+.folder-crumbs{display:flex;flex-direction:row;align-items:center;flex-wrap:wrap;gap:4px;padding:8px 12px;color:var(--muted)}
+.folder-crumbs button{width:auto;min-height:40px;max-width:100%;overflow-wrap:anywhere;padding:4px 6px;color:var(--accent);text-align:left}
+:root[data-theme] .dialog-actions{display:flex;gap:12px}
+:root[data-theme] dialog{background:var(--paper);color:var(--ink);border-color:var(--line)}
+:root[data-theme] dialog input,:root[data-theme] dialog select{background:var(--surface);color:var(--ink);border-color:var(--line)}
+:root[data-theme] .space-controls{gap:12px}
+:root[data-theme] .space-controls select,:root[data-theme] .space-controls button{min-height:48px}
+@media(max-width:850px),(pointer:coarse) and (max-width:1100px){
+ :root[data-theme] .tree-folder,:root[data-theme] .tree-toggle,.folder-crumbs button{min-height:48px}
+ :root[data-theme] .phone-note-header{gap:12px}
+ :root[data-theme] .phone-header .space-controls{gap:12px}
+ :root[data-theme] .folder-card{margin:8px 0;width:100%}
+ :root[data-theme] .phone-nav button{min-width:0}
+}
+@media(max-height:500px) and (max-width:1100px){
+ :root[data-theme] .phone-nav{padding-block:4px}
+ :root[data-theme] .phone-nav button{min-height:48px}
+}
+
+.phone-header .space-controls{grid-template-columns:minmax(0,1fr) 44px!important}.phone-header .space-controls button{grid-column:2!important}.phone-header .space-controls label{grid-column:1!important}.index-access{display:block;width:100%;padding:12px;margin-bottom:12px;border:1px solid var(--line);border-radius:10px;text-align:left;color:var(--muted)}
+#phone-chips{flex-wrap:wrap}.phone-nav button span{font-size:11px}

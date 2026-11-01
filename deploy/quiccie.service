@@ -1,0 +1,32 @@
+[Unit]
+Description=Quiccie notes service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=quiccie
+Group=quiccie
+WorkingDirectory=/var/lib/quiccie
+ExecStart=/opt/quiccie/quiccie -db /var/lib/quiccie/quiccie.db -password-hash-file /etc/quiccie/password.hash -listen 127.0.0.1:8090 -mcp-listen 127.0.0.1:8766 -secure-cookie
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/quiccie
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryMax=3G
+Environment=GOMEMLIMIT=2GiB
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

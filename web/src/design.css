@@ -1,0 +1,103 @@
+/* Colour roles shared by the browser and the Android reader. */
+:root[data-theme] {
+  --ink:#242633; --muted:#606477; --line:#dce0e9; --control-line:#8b90a2;
+  --surface:#f6f7fb; --paper:#ffffff; --rail:#eef0f6; --tint:#ebe7fb;
+  --accent:#6246b5; --green:var(--accent); --action:#6246b5; --on-action:#ffffff;
+  --hover:#e7eaf2; --danger:#b32642; --warning:#805300; --warning-bg:#fff2d6;
+  --success:#23664f; --shadow:0 16px 48px #24263318;
+  --color-base-100:var(--paper); --color-base-200:var(--surface); --color-base-300:var(--line);
+  --color-base-content:var(--ink); --color-primary:var(--action); --color-primary-content:var(--on-action);
+  --phone-bg:var(--surface); --phone-paper:var(--paper); --phone-ink:var(--ink);
+  --phone-muted:var(--muted); --phone-line:var(--line); --phone-accent:var(--accent);
+  --phone-tint:var(--tint); --phone-danger:var(--danger);
+  color:var(--ink); background:var(--surface); accent-color:var(--accent);
+}
+:root[data-theme=dark] {
+  --ink:#eceef5; --muted:#a9b0c3; --line:#343949; --control-line:#747d94;
+  --surface:#171a22; --paper:#1e222d; --rail:#13161e; --tint:#302a48;
+  --accent:#c4b5fd; --action:#c4b5fd; --on-action:#241940; --hover:#292e3d;
+  --danger:#ffacb9; --warning:#f2c66d; --warning-bg:#382e1a;
+  --success:#8dd8b4; --shadow:0 16px 48px #0005;
+}
+:root[data-theme] body {color:var(--ink);background:var(--surface)}
+:root[data-theme] :is(button,input,select,textarea,a) { -webkit-tap-highlight-color:transparent }
+:root[data-theme] :is(button,a,input,select,textarea):focus-visible {outline:2px solid var(--accent);outline-offset:3px}
+:root[data-theme] button {transition:background-color .12s ease,border-color .12s ease}
+:root[data-theme] button:hover {background:var(--hover)}
+:root[data-theme] button:disabled {opacity:.55;cursor:default}
+:root[data-theme] :is(input,textarea,select) {color:var(--ink);background:var(--paper);border-color:var(--control-line)}
+:root[data-theme] ::placeholder {color:var(--muted);opacity:1}
+:root[data-theme] :is(.workspace,.main,.note-list,.document-head,.document-footer) {background:var(--surface);color:var(--ink);border-color:var(--line)}
+:root[data-theme] :is(.document,.page-scroll,#source-editor,.android-editor) {background:var(--paper);color:var(--ink)}
+:root[data-theme] :is(.sidebar,.phone-nav) {background:var(--rail);border-color:var(--line)}
+:root[data-theme] :is(.topbar,.search-wrap,#detail,dialog) {background:var(--paper);color:var(--ink);border-color:var(--line)}
+:root[data-theme] :is(.new-note,button.primary,.sync-dialog .primary,.workspace .phone-create) {background:var(--action);color:var(--on-action);border:1px solid transparent;font-weight:600;border-radius:12px}
+:root[data-theme] :is(.new-note,button.primary,.sync-dialog .primary,.workspace .phone-create):hover {background:var(--action);filter:brightness(.94)}
+:root[data-theme] :is(.brand,.empty-mark,.phone-mark) {color:var(--accent)}
+:root[data-theme] :is(.empty-mark,.phone-mark,.avatar) {background:var(--tint)}
+:root[data-theme] :is(.nav-label,.tree-group h3,.document-footer,.note-meta,.note-excerpt,.folder-card small,.empty p,.login p,.login small) {color:var(--muted)}
+:root[data-theme] :is(.sidebar nav button.active,.tree-tabs button[aria-pressed=true],.tree-note.selected,.phone-nav button[aria-current=page]) {background:var(--tint);color:var(--accent)}
+:root[data-theme] .phone-nav button {color:var(--muted)}
+:root[data-theme] .phone-nav button[aria-current=page] {font-weight:650}
+:root[data-theme] :is(.note-card,.folder-card) {border-color:var(--line);box-shadow:none}
+:root[data-theme] .note-card.selected {background:var(--tint);border-color:var(--accent);box-shadow:inset 3px 0 var(--accent)}
+:root[data-theme] .note-title {font-weight:600;letter-spacing:-.15px}
+:root[data-theme] .note-excerpt {line-height:1.6}
+:root[data-theme] .note-meta {letter-spacing:.025em}
+:root[data-theme] .list-head>span {background:var(--rail);color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:4px 9px}
+:root[data-theme] :is(.document-head,.document-footer) {font-size:12px}
+:root[data-theme] .document-head button {font-size:12px}
+:root[data-theme] :is(.document-head button[aria-pressed=true],#phone-chips button[aria-pressed=true],.phone-edit) {background:var(--tint);color:var(--accent)}
+:root[data-theme] :is(#delete,.danger,#new-error,#space-error,.property-dialog [role=alert],.login #login-error) {color:var(--danger)}
+:root[data-theme] dialog {box-shadow:var(--shadow)}
+:root[data-theme] dialog::backdrop {background:#10142080;backdrop-filter:blur(3px)}
+:root[data-theme] .login {background:var(--surface)}
+:root[data-theme] :is(.login h1,.empty h1) {font-family:inherit;color:var(--ink);letter-spacing:-.6px}
+:root[data-theme] .login form {background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:20px}
+:root[data-theme] :is(#conflict,.sync-summary) {background:var(--tint);color:var(--ink);border-radius:12px}
+:root[data-theme] #conflict {background:var(--warning-bg);color:var(--warning)}
+:root[data-theme] #conflict button {background:var(--paper);color:var(--warning)}
+:root[data-theme] [data-sync-open] {color:var(--muted)}
+:root[data-theme] [data-sync-open][data-phase=synced]>:first-child {color:var(--success)}
+:root[data-theme] [data-sync-open]:is([data-phase=error],[data-phase=offline],[data-phase=auth],[data-phase=conflict]) {color:var(--warning)}
+/* Reading surfaces use the same roles in the WebView and browser. */
+:root[data-theme] .tiptap {font-family:inherit;color:var(--ink);font-size:16px;line-height:1.8}
+:root[data-theme] .tiptap :is(h1,h2,h3,h4) {font-family:inherit;color:var(--ink);font-weight:650;letter-spacing:-.025em;line-height:1.3}
+:root[data-theme] .tiptap h1 {font-size:32px}
+:root[data-theme] .tiptap h2 {font-size:24px}
+:root[data-theme] .tiptap h3 {font-size:19px}
+:root[data-theme] .tiptap a {color:var(--accent);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+:root[data-theme] .tiptap :is(pre,code,th) {background:var(--surface);color:var(--ink)}
+:root[data-theme] .tiptap pre {padding:18px;border:1px solid var(--line);border-radius:12px;line-height:1.65}
+:root[data-theme] .tiptap pre code {background:none;padding:0}
+:root[data-theme] .tiptap :is(td,th) {border-color:var(--line)}
+:root[data-theme] .tiptap td {background:var(--paper);color:var(--ink)}
+:root[data-theme] .tiptap :is(blockquote,.callout) {background:var(--tint);color:var(--ink);border-color:var(--accent);border-radius:0 10px 10px 0}
+:root[data-theme] .tiptap mark {background:var(--warning-bg);color:var(--warning)}
+:root[data-theme] .properties {background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px}
+:root[data-theme] .properties summary {color:var(--muted)}
+:root[data-theme] :is(#toolbar,.toolbar) {background:var(--surface);border-color:var(--line)}
+:root[data-theme] #toolbar button {font-family:inherit;color:var(--ink);border-radius:8px}
+:root[data-theme] #toolbar button[aria-pressed=true] {background:var(--tint);color:var(--accent)}
+:root[data-theme] #backlinks {border-color:var(--line);color:var(--muted)}
+:root[data-theme] .android-editor :is(#editor,#android-reader) {background:var(--paper);color:var(--ink)}
+@media(max-width:850px),(pointer:coarse) and (max-width:1100px) {
+ :root[data-theme] .workspace :is(.phone-header,.phone-note-header) {background:var(--surface)}
+ :root[data-theme] .workspace .note-card {border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+ :root[data-theme] .workspace .note-card.selected {border-color:var(--accent);background:var(--tint)}
+ :root[data-theme] .workspace .phone-title-row h1 {font-size:30px;letter-spacing:-.7px;font-weight:650}
+ :root[data-theme] .workspace .tiptap h1 {font-size:28px}
+ :root[data-theme] .workspace .phone-create {min-height:48px}
+ :root[data-theme] .workspace .properties {background:var(--surface);border-color:var(--line)}
+}
+@media(prefers-reduced-motion:reduce) {:root[data-theme] * {transition:none!important;scroll-behavior:auto!important}}
+/* Browse holds the two hierarchy views. Search always states its scope. */
+.phone-nav {grid-template-columns:repeat(4,minmax(0,1fr))}
+#phone-browse-views {display:flex;gap:8px;margin:8px 0}
+#phone-browse-views button {min-height:44px;flex:1;border:1px solid var(--line);border-radius:10px}
+#phone-browse-views button[aria-current=page] {background:var(--tint);color:var(--accent)}
+:root[data-theme] .search-wrap {position:relative;padding-top:24px;height:auto;min-height:66px}
+.search-scope {position:absolute;top:5px;left:12px;right:8px;font-size:11px;color:var(--muted);line-height:1.3}
+@media(max-width:850px),(pointer:coarse) and (max-width:1100px) {
+ :root[data-theme] .workspace .search-wrap {padding-top:24px;min-height:72px;height:auto}
+}
