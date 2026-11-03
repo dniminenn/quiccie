@@ -74,6 +74,18 @@ class InstallerTests(unittest.TestCase):
    self.assertIn('Keep the profile rule.',(profile/'CLAUDE.md').read_text())
    self.assertFalse(json.loads((profile/'settings.json').read_text())['autoMemoryEnabled'])
    self.assertEqual(json.loads(wiring.read_text())['mcpServers']['notes-memory']['command'],'keep-this')
+ def test_agy_rules_only_where_agy_config_exists(self):
+  with tempfile.TemporaryDirectory() as folder:
+   root=Path(folder);cmd=['python3',str(Path(module.__file__)),'--home',folder]
+   subprocess.run(cmd+['--apply'],check=True,capture_output=True)
+   self.assertFalse((root/'.gemini').exists())
+   (root/'.gemini/config').mkdir(parents=True);(root/module.AGY_TARGET).write_text('Keep the agy rule.\n')
+   subprocess.run(cmd+['--apply'],check=True,capture_output=True)
+   result=subprocess.run(cmd+['--check'],check=True,capture_output=True,text=True)
+   self.assertIn('3 agent instruction blocks',result.stdout)
+   text=(root/module.AGY_TARGET).read_text()
+   self.assertTrue(text.startswith('Keep the agy rule.'))
+   self.assertEqual(text.count('Shared durable memory'),1)
  def test_profile_paths_are_bounded_and_deduplicated(self):
   with tempfile.TemporaryDirectory() as folder:
    root=Path(folder)
@@ -124,6 +136,12 @@ for line in sys.stdin:
   with tempfile.TemporaryDirectory() as folder:
    self.assertIsNone(checker.read_config(Path(folder),'claude'))
   with self.assertRaises(ValueError):checker.check_connection({'url':'https://notes.example.invalid/mcp'})
+
+ def test_agy_config_is_read(self):
+  with tempfile.TemporaryDirectory() as folder:
+   root=Path(folder);(root/'.gemini/config').mkdir(parents=True)
+   (root/'.gemini/config/mcp_config.json').write_text('{"mcpServers":{"notes-memory":{"command":"keep-this"}}}')
+   self.assertEqual(checker.read_config(root,'agy'),{'command':'keep-this'})
 
  def test_private_profiles_are_discovered_by_checker(self):
   with tempfile.TemporaryDirectory() as folder:

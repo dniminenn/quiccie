@@ -1,7 +1,7 @@
 # Agent memory instructions
 
 Use this package to update an existing `notes-memory` MCP setup.
-It supports Codex, Claude, and additional Claude profiles on each host.
+It supports Codex, Claude, Antigravity CLI (`agy`), and additional Claude profiles on each host.
 It keeps existing connection commands, keys, and server names.
 The instructions apply to each session. They do not depend on a skill trigger.
 
@@ -28,6 +28,7 @@ It replaces the `Shared durable memory` section in these files:
 - `~/.codex/AGENTS.md`
 - `~/.claude/CLAUDE.md`
 - `CLAUDE.md` in each configured extra Claude profile directory
+- `~/.gemini/config/AGENTS.md`, only when `~/.gemini/config` exists
 
 It keeps other instruction sections.
 It sets `autoMemoryEnabled` to `false` in each selected Claude settings file.
@@ -49,6 +50,7 @@ Do not add a second MCP server.
 ## Additional Claude profiles
 
 Codex and standard Claude are the defaults.
+The connection check reads `agy` from `~/.gemini/config/mcp_config.json`.
 Keep extra profile names in `~/.config/quiccie/agent-profiles.json`:
 
 ```json

@@ -12,6 +12,8 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGETS = ('.codex/AGENTS.md', '.claude/CLAUDE.md')
+# Antigravity CLI rules; only on hosts where agy has a config directory.
+AGY_TARGET = '.gemini/config/AGENTS.md'
 SETTINGS = ('.claude/settings.json',)
 
 def claude_profiles(home, extra=None):
@@ -67,6 +69,7 @@ def main():
     args = parser.parse_args()
     profiles = claude_profiles(args.home, args.claude_profile)
     targets = TARGETS + tuple(profile + '/CLAUDE.md' for profile in profiles)
+    if (args.home / '.gemini/config').is_dir(): targets += (AGY_TARGET,)
     settings = SETTINGS + tuple(profile + '/settings.json' for profile in profiles)
     block = (ROOT / 'agent-integration/memory-instructions.md').read_text()
     context_path = args.private_context or args.home / '.config/quiccie/agent-context.md'

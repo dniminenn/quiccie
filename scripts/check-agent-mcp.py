@@ -13,6 +13,7 @@ import tomllib
 CONFIGS = {
     'codex': ('.codex/config.toml', 'mcp_servers'),
     'claude': ('.claude.json', 'mcpServers'),
+    'agy': ('.gemini/config/mcp_config.json', 'mcpServers'),
 }
 
 
@@ -162,7 +163,7 @@ def check_connection(config, requested_spaces=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--home', type=Path, default=Path.home())
-    parser.add_argument('--agent', action='append', help='Require codex, claude, or a configured profile name.')
+    parser.add_argument('--agent', action='append', help='Require codex, claude, agy, or a configured profile name.')
     parser.add_argument('--claude-profile', action='append', help='Additional home-relative Claude profile directory.')
     parser.add_argument('--space', action='append')
     args = parser.parse_args()
