@@ -301,6 +301,9 @@ func (s *Service) Call(name string, a map[string]any) (any, error) {
 		}
 		return result, nil
 	}
+	if name == "memory_delete" {
+		return s.memoryDelete(selected, prefix+p, p, expected)
+	}
 	content := str(a, "content")
 	old, oldErr := s.DB.Get(prefix + p)
 	if oldErr == nil && !old.Deleted {

@@ -61,6 +61,8 @@ Call `spaces_list` to get the registered IDs and shared projects.
 Use `memory_scope` for a known project or repository.
 Use `memory_search_space` when the space is clear but the project is unknown.
 Use `notes_search_space` for ordinary notes in that space.
+Use `memory_delete` with the checksum from the latest `memory_read` to delete one agent memory note.
+The revision history keeps the earlier versions.
 Each memory hit identifies the canonical project for its next read.
 Ordinary-note paths remain relative to the full vault.
 The seven original tool schemas remain unchanged.

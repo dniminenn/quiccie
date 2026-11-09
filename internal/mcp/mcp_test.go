@@ -110,7 +110,7 @@ func TestToolsSchemaAndErrorShape(t *testing.T) {
 		t.Fatal(e)
 	}
 	tools := reply["result"].(map[string]any)["tools"].([]any)
-	if len(tools) != 10 {
+	if len(tools) != 11 {
 		t.Fatal(len(tools))
 	}
 	res = s.RPC([]byte(`{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"notes_read","arguments":{"path":"../secret.md"}}}`))
@@ -118,6 +118,58 @@ func TestToolsSchemaAndErrorShape(t *testing.T) {
 	result := reply["result"].(map[string]any)
 	if result["isError"] != true || result["structuredContent"] != nil {
 		t.Fatal(string(res))
+	}
+}
+func TestMemoryDelete(t *testing.T) {
+	s := testService(t)
+	v, e := s.Call("memory_write", map[string]any{"project": "example-network", "path": "notes/gone.md", "content": "needle delete-me\n"})
+	if e != nil {
+		t.Fatal(e)
+	}
+	checksum := v.(Result)["checksum"].(string)
+	if _, e = s.DB.Put(store.Write{Path: "Agent Memory/projects/other/keep.md", Content: "needle other"}); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = s.Call("memory_delete", map[string]any{"project": "example-network", "path": "notes/gone.md"}); e == nil {
+		t.Fatal("delete without checksum")
+	}
+	wrong := strings.Repeat("0", 64)
+	if _, e = s.Call("memory_delete", map[string]any{"project": "example-network", "path": "notes/gone.md", "expected_checksum": wrong}); e == nil {
+		t.Fatal("delete with a stale checksum")
+	}
+	if _, e = s.Call("memory_delete", map[string]any{"project": "example-network", "path": "../other/keep.md", "expected_checksum": wrong}); e == nil {
+		t.Fatal("path traversal")
+	}
+	other, e := s.DB.Get("Agent Memory/projects/other/keep.md")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if _, e = s.Call("memory_delete", map[string]any{"project": "example-network", "path": "keep.md", "expected_checksum": other.Checksum}); e == nil {
+		t.Fatal("deleted outside the project root")
+	}
+	if n, e := s.DB.Get("Agent Memory/projects/other/keep.md"); e != nil || n.Deleted {
+		t.Fatal("other project changed", e)
+	}
+	v, e = s.Call("memory_delete", map[string]any{"project": "example-network", "path": "notes/gone.md", "expected_checksum": checksum})
+	if e != nil || v.(Result)["action"] != "deleted" {
+		t.Fatal(v, e)
+	}
+	if _, e = s.Call("memory_read", map[string]any{"project": "example-network", "path": "notes/gone.md"}); e == nil {
+		t.Fatal("deleted note still readable")
+	}
+	v, e = s.Call("memory_search", map[string]any{"project": "example-network", "query": "delete-me"})
+	if e != nil {
+		t.Fatal(e)
+	}
+	if b, _ := json.Marshal(v); strings.Contains(string(b), "gone.md") {
+		t.Fatal(string(b))
+	}
+	if _, e = s.Call("memory_delete", map[string]any{"project": "example-network", "path": "notes/gone.md", "expected_checksum": checksum}); e == nil {
+		t.Fatal("second delete")
+	}
+	v, e = s.Call("memory_write", map[string]any{"project": "example-network", "path": "notes/gone.md", "content": "back\n"})
+	if e != nil || v.(Result)["action"] != "created" {
+		t.Fatal("write after delete", v, e)
 	}
 }
 func TestMemoryMetadata(t *testing.T) {
